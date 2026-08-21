@@ -3,14 +3,14 @@ function updateIconForTab(tabId, verdict) {
 
   const upperVerdict = (verdict || "").toUpperCase();
 
-  let iconFileName = "frontend/images/icon-default.png";
+  let iconFileName = "components/images/icon-default.png";
 
   if (upperVerdict === "SCAM") {
-    iconFileName = "frontend/images/icon-scam.png";
+    iconFileName = "components/images/icon-scam.png";
   } else if (upperVerdict === "SUSPICIOUS") {
-    iconFileName = "frontend/images/icon-suspicious.png";
+    iconFileName = "components/images/icon-suspicious.png";
   } else if (upperVerdict === "SAFE") {
-    iconFileName = "frontend/images/icon-safe.png";
+    iconFileName = "components/images/icon-safe.png";
   }
 
   chrome.action.setIcon({

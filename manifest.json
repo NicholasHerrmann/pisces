@@ -8,7 +8,7 @@
     "storage"
   ],
   "background": {
-    "service_worker": "frontend/background.js"
+    "service_worker": "components/background.js"
   },
   "host_permissions": [
     "https://mail.google.com/*",
@@ -28,14 +28,14 @@
         "https://mail.proton.me/*",
         "https://app.proton.me/*"
       ],
-      "js": ["frontend/content.js"],
+      "js": ["components/content.js"],
       "run_at": "document_end"
     }
   ],
   "action": {
-    "default_popup": "frontend/popup.html",
+    "default_popup": "components/popup.html",
     "default_icon": {
-      "128": "frontend/images/icon-default.png"
+      "128": "components/images/icon-default.png"
     }
   }
 }
