@@ -15,7 +15,6 @@ client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
 app = FastAPI()
 
-# Allow the browser extension to send HTTP requests to localhost
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],

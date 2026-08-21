@@ -10,6 +10,6 @@
     "http://127.0.0.1:8000/*"
   ],
   "action": {
-    "default_popup": "popup.html"
+    "default_popup": "/frontend/popup.html"
   }
 }
