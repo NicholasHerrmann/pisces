@@ -3,7 +3,6 @@ function updateIconForTab(tabId, verdict) {
 
   const upperVerdict = (verdict || "").toUpperCase();
 
-  // Use relative path from extension root inside a dictionary object
   let iconFileName = "frontend/images/icon-default.png";
 
   if (upperVerdict === "SCAM") {

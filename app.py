@@ -123,6 +123,31 @@ Return ONLY a valid JSON object matching this schema:
         raise HTTPException(status_code=500, detail=str(e))
 
 
+#if __name__ == "__main__":
+#    import uvicorn
+#    uvicorn.run(app, host="127.0.0.1", port=8000)
+
+#------------------
+# TESTING PURPOSES
+#------------------
 if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="127.0.0.1", port=8000)
+    import sys
+
+    if "--test" in sys.argv:
+        # Quick local test without spinning up the server or using curl.
+        # Run with: python app.py --test
+        test_request = EmailRequest(
+            email_text=(
+                "Hi Sarah,\n\n"
+                "Attached is the Q3 budget summary you asked for during standup. Let me know if the "
+                "numbers for the marketing line look off — I pulled them straight from the finance "
+                "dashboard this morning.\n\n"
+                "Talk Thursday,\nJames"
+            ),
+            sender_domain="",
+        )
+        result = analyze_email_endpoint(test_request)
+        print(json.dumps(result.model_dump(), indent=2))
+    else:
+        import uvicorn
+        uvicorn.run(app, host="127.0.0.1", port=8000)

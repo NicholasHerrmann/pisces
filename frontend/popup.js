@@ -9,7 +9,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   statusMsg.innerText = "Fetching latest analysis...";
 
-  // Retrieve cached analysis from chrome storage
   chrome.storage.local.get(["currentEmailAnalysis"], (result) => {
     const data = result.currentEmailAnalysis;
 
