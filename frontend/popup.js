@@ -25,8 +25,36 @@ document.getElementById("analyzeBtn").addEventListener("click", async () => {
     const injectionResults = await chrome.scripting.executeScript({
       target: { tabId: tab.id },
       func: () => {
-        const bodyElement = document.querySelector('.a3s.aiL');
-        return bodyElement ? bodyElement.innerText : null;
+        const hostname = window.location.hostname;
+        let emailBody = null;
+
+        // 1. Gmail
+        if (hostname.includes("mail.google.com")) {
+          const bodyElement = document.querySelector(".a3s.aiL");
+          if (bodyElement) emailBody = bodyElement.innerText;
+        } 
+        // 2. Outlook (Live, Office 365, Hotmail)
+        else if (hostname.includes("outlook.cloud.microsoft")) {
+          const bodyElement = document.querySelector('[aria-label="Message body"], .ItemBody');
+          if (bodyElement) emailBody = bodyElement.innerText;
+        }
+        // 3. Yahoo Mail
+        else if (hostname.includes("mail.yahoo.com")) {
+          const bodyElement = document.querySelector('[data-test-id="message-view-body"]');
+          if (bodyElement) emailBody = bodyElement.innerText;
+        }
+        // 4. iCloud Mail
+        else if (hostname.includes("mail.icloud.com")) {
+          const bodyElement = document.querySelector('.cw-email-body, [role="main"]');
+          if (bodyElement) emailBody = bodyElement.innerText;
+        }
+        // 5. Proton Mail
+        else if (hostname.includes("proton.me")) {
+          // Proton renders decrypted message bodies inside an iframe or div with .message-content
+          const bodyElement = document.querySelector('.message-content, [data-testid="message-content"]');
+          if (bodyElement) emailBody = bodyElement.innerText;
+        }
+        return emailBody;
       }
     });
 

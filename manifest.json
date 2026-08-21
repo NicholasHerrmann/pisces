@@ -7,7 +7,12 @@
     "scripting"
   ],
   "host_permissions": [
-    "http://127.0.0.1:8000/*"
+    "https://mail.google.com/*",
+    "https://outlook.cloud.microsoft/*",
+    "https://mail.yahoo.com/*",
+    "mail.icloud.com/*",
+    "https://mail.proton.me/*",
+    "https://app.proton.me/*"
   ],
   "action": {
     "default_popup": "/frontend/popup.html"
