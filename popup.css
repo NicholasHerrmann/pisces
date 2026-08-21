@@ -1,0 +1,16 @@
+html, body {
+  background: rgb(29, 18, 88);
+  color: white;
+  font-family: Arial, sans-serif;
+  text-align: center;
+  width: 200px;
+  height: 300px;
+  margin: 0px;
+  padding: 0px;
+}
+button {
+  background: #a1a4fb;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+}
