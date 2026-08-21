@@ -31,6 +31,8 @@ class EmailRequest(BaseModel):
 
 def check_suspicious_links(urls, sender_domain=""):
     suspicious_flags = []
+    sender_domain = sender_domain.lower().strip()
+
     for url in urls:
         parsed = urlparse(url)
         domain = parsed.netloc.lower()
@@ -38,7 +40,7 @@ def check_suspicious_links(urls, sender_domain=""):
         if re.match(r"^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}", domain):
             suspicious_flags.append(f"URL uses a raw IP address instead of a domain: {url}")
 
-        if sender_domain and sender_domain not in domain:
+        if sender_domain and not domain.endswith(sender_domain):
             suspicious_flags.append(
                 f"Link domain ({domain}) does not match declared sender domain ({sender_domain})"
             )

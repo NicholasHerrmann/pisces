@@ -1,6 +1,38 @@
 let lastExtractedText = "";
 let analyzeTimeout = null;
 
+function extractSenderDomain() {
+  const hostname = window.location.hostname;
+  let rawSender = "";
+
+  if (hostname.includes("mail.google.com")) {
+    // Gmail
+    const senderEl = document.querySelector("span[email]");
+    if (senderEl) rawSender = senderEl.getAttribute("email");
+  } else if (hostname.includes("outlook.cloud.microsoft")) {
+    // Outlook
+    const senderEl = document.querySelector("[data-hovercard-id], [aria-label*='@']");
+    if (senderEl) {
+      rawSender = senderEl.getAttribute("data-hovercard-id") || senderEl.getAttribute("aria-label") || "";
+    }
+  } else if (hostname.includes("mail.yahoo.com")) {
+    // Yahoo Mail
+    const senderEl = document.querySelector('[data-test-id="message-view-sender-email"], [data-test-id="sender-email"]');
+    if (senderEl) rawSender = senderEl.innerText || senderEl.getAttribute("title");
+  } else if (hostname.includes("mail.icloud.com")) {
+    // iCloud Mail
+    const senderEl = document.querySelector('.cw-email-header-from, [data-test-id="from-address"]');
+    if (senderEl) rawSender = senderEl.innerText;
+  } else if (hostname.includes("proton.me")) {
+    // Proton Mail
+    const senderEl = document.querySelector('.message-address[data-testid="message-header:from"]');
+    if (senderEl) rawSender = senderEl.getAttribute("title") || senderEl.innerText;
+  }
+
+  const emailMatch = rawSender.match(/[a-zA-Z0-9._%+-]+@([a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/);
+  return emailMatch ? emailMatch[1].toLowerCase() : "";
+}
+
 function extractEmailBody() {
   const hostname = window.location.hostname;
   let bodyElement = null;
@@ -26,6 +58,7 @@ async function autoAnalyze() {
   if (!emailText || emailText === lastExtractedText) return;
 
   lastExtractedText = emailText;
+  const senderDomain = extractSenderDomain();
 
   if (!chrome.runtime || !chrome.runtime.id) {
     console.warn("[Pisces AI] Extension context invalidated. Please refresh the webmail page.");
@@ -34,7 +67,11 @@ async function autoAnalyze() {
 
   try {
     chrome.runtime.sendMessage(
-      { action: "ANALYZE_EMAIL", emailText: emailText },
+      { 
+        action: "ANALYZE_EMAIL", 
+        emailText: emailText,
+        senderDomain: senderDomain 
+      },
       (response) => {
         if (chrome.runtime.lastError) {
           return;

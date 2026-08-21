@@ -34,7 +34,10 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     fetch("http://127.0.0.1:8000/analyze", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email_text: request.emailText })
+      body: JSON.stringify({ 
+        email_text: request.emailText,
+        sender_domain: request.senderDomain || "" 
+      })
     })
       .then((res) => {
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
