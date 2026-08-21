@@ -1,109 +1,41 @@
-document.getElementById("analyzeBtn").addEventListener("click", async () => {
-  const btn = document.getElementById("analyzeBtn");
+document.addEventListener("DOMContentLoaded", async () => {
   const statusMsg = document.getElementById("status-msg");
   const resultContainer = document.getElementById("result-container");
   const verdictBanner = document.getElementById("verdict-banner");
   const gaugeValue = document.getElementById("gaugeValue");
-  const explanationDiv = document.getElementById("explanation");
   const redFlagsList = document.getElementById("red-flags-list");
   const redFlagsSection = document.getElementById("red-flags-section");
+  const dropdownSummary = document.getElementById("dropdown-summary");
 
-  btn.disabled = true;
-  statusMsg.innerText = "Extracting email...";
-  resultContainer.style.display = "none";
-  redFlagsList.innerHTML = "";
+  statusMsg.innerText = "Fetching latest analysis...";
 
-  try {
-    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  // Retrieve cached analysis from chrome storage
+  chrome.storage.local.get(["currentEmailAnalysis"], (result) => {
+    const data = result.currentEmailAnalysis;
 
-    if (!tab) {
-      statusMsg.innerText = "No active tab found.";
-      btn.disabled = false;
+    if (!data) {
+      statusMsg.innerText = "No open email analyzed yet.";
       return;
     }
 
-    const injectionResults = await chrome.scripting.executeScript({
-      target: { tabId: tab.id },
-      func: () => {
-        const hostname = window.location.hostname;
-        let emailBody = null;
-
-        // 1. Gmail
-        if (hostname.includes("mail.google.com")) {
-          const bodyElement = document.querySelector(".a3s.aiL");
-          if (bodyElement) emailBody = bodyElement.innerText;
-        } 
-        // 2. Outlook (Live, Office 365, Hotmail)
-        else if (hostname.includes("outlook.cloud.microsoft")) {
-          const bodyElement = document.querySelector('[aria-label="Message body"], .ItemBody');
-          if (bodyElement) emailBody = bodyElement.innerText;
-        }
-        // 3. Yahoo Mail
-        else if (hostname.includes("mail.yahoo.com")) {
-          const bodyElement = document.querySelector('[data-test-id="message-view-body"]');
-          if (bodyElement) emailBody = bodyElement.innerText;
-        }
-        // 4. iCloud Mail
-        else if (hostname.includes("mail.icloud.com")) {
-          const bodyElement = document.querySelector('.cw-email-body, [role="main"]');
-          if (bodyElement) emailBody = bodyElement.innerText;
-        }
-        // 5. Proton Mail
-        else if (hostname.includes("proton.me")) {
-          // Proton renders decrypted message bodies inside an iframe or div with .message-content
-          const bodyElement = document.querySelector('.message-content, [data-testid="message-content"]');
-          if (bodyElement) emailBody = bodyElement.innerText;
-        }
-        return emailBody;
-      }
-    });
-
-    const emailText = injectionResults[0]?.result;
-
-    if (!emailText) {
-      statusMsg.innerText = "No open email detected!";
-      btn.disabled = false;
-      return;
-    }
-
-    statusMsg.innerText = "Analyzing with AI...";
-
-    const response = await fetch("http://127.0.0.1:8000/analyze", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email_text: emailText })
-    });
-
-    if (!response.ok) {
-      throw new Error(`Server returned ${response.status}`);
-    }
-
-    const data = await response.json();
     statusMsg.innerText = "";
-
-    verdictBanner.className = ""; 
+    verdictBanner.className = "";
     let themeColor = "#5cb85c";
 
     const verdict = (data.verdict || "").toUpperCase();
 
     if (verdict === "SCAM") {
-      verdictBanner.innerText = "⚠️ SCAM DETECTED";
+      verdictBanner.innerText = "SCAM";
       verdictBanner.classList.add("scam");
       themeColor = "#d9534f";
     } else if (verdict === "SUSPICIOUS") {
-      verdictBanner.innerText = "⚡ SUSPICIOUS EMAIL";
+      verdictBanner.innerText = "⚡ SUSPICIOUS";
       verdictBanner.classList.add("suspicious");
       themeColor = "#f0ad4e";
     } else {
-      verdictBanner.innerText = "✅ EMAIL SAFE";
+      verdictBanner.innerText = "SAFE";
       verdictBanner.classList.add("safe");
     }
-
-    // --- UPDATED DROPDOWN & EXPLANATION LOGIC START ---
-    explanationDiv.innerText = data.explanation || "No explanation available.";
-
-    // Query element by ID right when it's needed
-    const dropdownSummary = document.getElementById("dropdown-summary");
 
     if (verdict === "SAFE") {
       if (dropdownSummary) dropdownSummary.innerText = "All Clear";
@@ -124,20 +56,13 @@ document.getElementById("analyzeBtn").addEventListener("click", async () => {
         redFlagsSection.style.display = "none";
       }
     }
-    // --- UPDATED LOGIC END ---
 
     resultContainer.style.display = "flex";
 
     const score = data.confidence_score ?? 0;
     gaugeValue.innerText = score;
     drawGauge(score, themeColor);
-
-  } catch (err) {
-    console.error(err);
-    statusMsg.innerText = "Error contacting Python backend!";
-  } finally {
-    btn.disabled = false;
-  }
+  });
 });
 
 /**
@@ -164,7 +89,7 @@ function drawGauge(score, color) {
 
   if (score > 0) {
     const clampedScore = Math.min(Math.max(score, 0), 100);
-    const startAngle = -0.5 * Math.PI; // Top center (-90deg)
+    const startAngle = -0.5 * Math.PI;
     const endAngle = startAngle + (clampedScore / 100) * (2 * Math.PI);
 
     ctx.beginPath();

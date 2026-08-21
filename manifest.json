@@ -1,20 +1,38 @@
 {
   "manifest_version": 3,
-  "name": "Piscis (AI Detector)",
+  "name": "Pisces (AI Detector)",
   "version": "1.0",
   "permissions": [
+    "scripting",
     "activeTab",
-    "scripting"
+    "storage"
   ],
+  "background": {
+    "service_worker": "frontend/background.js"
+  },
   "host_permissions": [
     "https://mail.google.com/*",
     "https://outlook.cloud.microsoft/*",
     "https://mail.yahoo.com/*",
-    "mail.icloud.com/*",
+    "https://mail.icloud.com/*",
     "https://mail.proton.me/*",
     "https://app.proton.me/*"
   ],
+  "content_scripts": [
+    {
+      "matches": [
+        "https://mail.google.com/*",
+        "https://outlook.cloud.microsoft/*",
+        "https://mail.yahoo.com/*",
+        "https://mail.icloud.com/*",
+        "https://mail.proton.me/*",
+        "https://app.proton.me/*"
+      ],
+      "js": ["frontend/content.js"],
+      "run_at": "document_end"
+    }
+  ],
   "action": {
-    "default_popup": "/frontend/popup.html"
+    "default_popup": "frontend/popup.html"
   }
 }

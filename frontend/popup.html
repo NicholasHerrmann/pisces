@@ -6,9 +6,6 @@
 </head>
 <body>
   <div class="container">
-    <h3>Piscis Phishing AI</h3>
-    <button id="analyzeBtn">Analyze Email</button>
-
     <div id="status-msg"></div>
 
     <div id="result-container">
@@ -27,19 +24,11 @@
         <summary id="dropdown-summary">Analysis Breakdown</summary> 
         
         <div class="dropdown-content">
-          <!-- Message shown when the email is SAFE -->
-          <div id="all-clear-msg" style="display: none; color: #5cb85c; font-weight: 600; padding: 4px 0;">
-            ✅ All clear! No threat indicators or suspicious red flags were detected in this email.
-          </div>
-
           <!-- Container for Red Flags / Issues -->
           <div id="red-flags-section">
             <div class="section-title">Red Flags</div>
             <ul id="red-flags-list"></ul>
           </div>
-
-          <div class="section-title">Explanation</div>
-          <div id="explanation"></div>
         </div>
       </details>
     </div>
