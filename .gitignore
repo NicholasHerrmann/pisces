@@ -1,4 +1,4 @@
-# Environment secrets (CRITICAL)
+# Environment file
 .env
 *.env
 
