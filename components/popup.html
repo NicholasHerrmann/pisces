@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <div id="status-msg"></div>
+
+    <div id="result-container">
+      <div id="verdict-banner">SAFE</div>
+
+      <div class="gauge-container">
+        <canvas id="gaugeCanvas" width="160" height="160"></canvas>
+        <div class="gauge-label">
+          <span id="gaugeValue">0</span>%
+          <div class="gauge-sub">Confidence</div>
+        </div>
+      </div>
+      <details class="details-dropdown">
+        <summary id="dropdown-summary">Analysis Breakdown</summary> 
+        
+        <div class="dropdown-content">
+          <div id="red-flags-section">
+            <div class="section-title">Red Flags</div>
+            <ul id="red-flags-list"></ul>
+          </div>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

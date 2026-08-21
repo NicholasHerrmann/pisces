@@ -1,0 +1,19 @@
+# Environment secrets (CRITICAL)
+.env
+*.env
+
+# Python runtime artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.venv/
+env/
+
+# IDE / Editor folders
+.vscode/
+.idea/
+
+# OS metadata
+.DS_Store
+Thumbs.db
