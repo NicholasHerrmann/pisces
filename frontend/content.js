@@ -27,14 +27,27 @@ async function autoAnalyze() {
 
   lastExtractedText = emailText;
 
-  chrome.runtime.sendMessage(
-    { action: "ANALYZE_EMAIL", emailText: emailText },
-    (response) => {
-      if (chrome.runtime.lastError) {
-        return;
+  // Check if extension context is valid before messaging
+  if (!chrome.runtime || !chrome.runtime.id) {
+    console.warn("[Pisces AI] Extension context invalidated. Please refresh the webmail page.");
+    return;
+  }
+
+  try {
+    chrome.runtime.sendMessage(
+      { action: "ANALYZE_EMAIL", emailText: emailText },
+      (response) => {
+        // Catch invalid context / extension reloads in callback
+        if (chrome.runtime.lastError) {
+          // You can safely ignore this error
+          return;
+        }
       }
-    }
-  );
+    );
+  } catch (err) {
+    // Catch context invalidation error thrown synchronously
+    console.warn("[Pisces AI] Message channel broken (extension reloaded/disabled):", err.message);
+  }
 }
 
 function debounceAnalyze() {

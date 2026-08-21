@@ -1,5 +1,37 @@
+function updateIconForTab(tabId, verdict) {
+  if (!tabId || tabId === chrome.tabs.TAB_ID_NONE) return;
+
+  const upperVerdict = (verdict || "").toUpperCase();
+
+  // Use relative path from extension root inside a dictionary object
+  let iconFileName = "frontend/images/icon-default.png";
+
+  if (upperVerdict === "SCAM") {
+    iconFileName = "frontend/images/icon-scam.png";
+  } else if (upperVerdict === "SUSPICIOUS") {
+    iconFileName = "frontend/images/icon-suspicious.png";
+  } else if (upperVerdict === "SAFE") {
+    iconFileName = "frontend/images/icon-safe.png";
+  }
+
+  chrome.action.setIcon({
+    tabId: tabId,
+    path: {
+      "128": chrome.runtime.getURL(iconFileName)
+    }
+  }, () => {
+    if (chrome.runtime.lastError) {
+      console.error("[Pisces AI] Icon Error:", chrome.runtime.lastError.message);
+    } else {
+      console.log(`[Pisces AI] Icon updated successfully to ${iconFileName} for tab ${tabId}`);
+    }
+  });
+}
+
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  if (request.action === "ANALYZE_EMAIL") {
+  if (request.action === "ANALYZE_EMAIL" && sender.tab) {
+    const tabId = sender.tab.id;
+
     fetch("http://127.0.0.1:8000/analyze", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -10,14 +42,20 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         return res.json();
       })
       .then((data) => {
-        chrome.storage.local.set({ currentEmailAnalysis: data });
+        const verdict = data.verdict;
+
+        chrome.storage.local.set({ currentEmailAnalysis: data }, () => {
+          updateIconForTab(tabId, verdict);
+        });
+
         sendResponse({ success: true, data });
       })
       .catch((err) => {
         console.warn("[Pisces AI Background] Backend fetch skipped or offline:", err.message);
+        updateIconForTab(tabId, "DEFAULT");
         sendResponse({ success: false, error: err.message });
       });
 
-    return true; // Keeps the message channel open for async fetch
+    return true;
   }
 });

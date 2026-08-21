@@ -33,6 +33,9 @@
     }
   ],
   "action": {
-    "default_popup": "frontend/popup.html"
+    "default_popup": "frontend/popup.html",
+    "default_icon": {
+      "128": "frontend/images/icon-default.png"
+    }
   }
 }
