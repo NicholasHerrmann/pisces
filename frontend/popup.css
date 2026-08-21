@@ -1,22 +1,24 @@
+* {
+  box-sizing: border-box;
+}
+
 html, body {
   width: 300px;
-  height: 400px;
+  min-height: 200px; /* Gives a nice starting size before loading */
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   color: #333;
   background-color: #ffffff;
-  overflow: hidden;
+  /* Remove overflow: hidden so Chrome can recalculate layout height */
 }
 
 .container {
   display: flex;
   flex-direction: column;
-  height: 100%;
   padding: 12px;
   box-sizing: border-box;
-  overflow-y: auto;
+  /* Removed: height: 100% and overflow-y: auto */
 }
 
 h3 {
@@ -36,6 +38,11 @@ button {
   font-weight: bold;
   font-size: 13px;
   flex-shrink: 0;
+  transition: background-color 0.2s ease;
+}
+
+button:hover {
+  background: #0056b3;
 }
 
 button:disabled {
@@ -48,23 +55,26 @@ button:disabled {
   text-align: center;
   font-size: 12px;
   color: #666;
+  min-height: 16px;
 }
 
 #result-container {
   margin-top: 12px;
   display: none;
+  flex-direction: column;
+  gap: 12px;
 }
 
 /* 1. Top Verdict Banner Block */
 #verdict-banner {
   width: 100%;
   padding: 10px 0;
-  font-size: 16px;
-  font-weight: bold;
+  font-size: 15px;
+  font-weight: 700;
   text-align: center;
   border-radius: 6px;
-  letter-spacing: 1px;
-  box-sizing: border-box;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
 }
 
 .scam { background-color: #d9534f; color: white; }
@@ -76,69 +86,80 @@ button:disabled {
   position: relative;
   width: 160px;
   height: 160px;
-  margin: 10px auto;
+  margin: 0 auto;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
+#gaugeCanvas {
+  width: 160px;
+  height: 160px;
+  display: block;
+}
+
 .gauge-label {
   position: absolute;
   text-align: center;
-  font-size: 24px;
-  font-weight: bold;
-  color: #333;
+  font-size: 22px;
+  font-weight: 800;
+  color: #111827;
+  pointer-events: none;
 }
 
 .gauge-sub {
   font-size: 10px;
   text-transform: uppercase;
-  color: #777;
-  font-weight: normal;
+  color: #6b7280;
+  font-weight: 600;
+  letter-spacing: 0.5px;
 }
 
 /* 3. Dropdown Accordion */
 .details-dropdown {
-  border: 1px solid #e0e0e0;
+  border: 1px solid #e5e7eb;
   border-radius: 6px;
-  background: #fdfdfd;
+  background: #ffffff;
   overflow: hidden;
-  margin-top: 5px;
 }
 
 .details-dropdown summary {
   padding: 8px 12px;
   font-size: 12px;
-  font-weight: bold;
+  font-weight: 600;
   cursor: pointer;
-  background: #f7f7f7;
-  color: #444;
+  background: #f9fafb;
+  color: #374151;
   outline: none;
+  user-select: none;
 }
 
 .dropdown-content {
   padding: 10px 12px;
   font-size: 12px;
-  border-top: 1px solid #e0e0e0;
+  border-top: 1px solid #e5e7eb;
 }
 
 .section-title {
   font-size: 10px;
   text-transform: uppercase;
-  color: #888;
-  font-weight: bold;
-  margin-top: 6px;
+  color: #9ca3af;
+  font-weight: 700;
+  margin-top: 8px;
   margin-bottom: 4px;
 }
 
-#explanation {
-  line-height: 1.4;
-  color: #444;
+.section-title:first-child {
+  margin-top: 0;
 }
 
 #red-flags-list {
   margin: 0;
-  padding-left: 16px;
-  color: #d9534f;
+  padding-left: 18px;
+  color: #dc2626;
   line-height: 1.4;
+}
+
+#red-flags-list li {
+  margin-bottom: 4px;
 }
