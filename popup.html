@@ -1,22 +1,45 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <style>
-    body { width: 300px; height: 200px; background: black; color: white; text-align: center; }
-    button { background: #ff008c; border: none; padding: 10px; cursor: pointer; }
-  </style>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="popup.css">
 </head>
 <body>
-  <h1>Email Checker</h1>
-  <button id="scan">Scan Email</button>
-  <div id="result"></div>
-  <script>
-    document.getElementById("scan").addEventListener("click", () => {
-      chrome.scripting.executeScript({
-        target: { tabId: chrome.tabs.TAB_ID_CURRENT },
-        function: () => alert("Scanning email...")
-      });
-    });
-  </script>
+  <div class="container">
+    <h3>Piscis Phishing AI</h3>
+    <button id="analyzeBtn">Analyze Email</button>
+
+    <div id="status-msg"></div>
+
+    <div id="result-container">
+      <!-- 1. Top Status Block -->
+      <div id="verdict-banner">SAFE</div>
+
+      <!-- 2. Middle Radial Gauge -->
+      <div class="gauge-container">
+        <canvas id="gaugeCanvas" width="160" height="160"></canvas>
+        <div class="gauge-label">
+          <span id="gaugeValue">0</span>%
+          <div class="gauge-sub">Confidence</div>
+        </div>
+      </div>
+
+      <!-- 3. Bottom Dropdown Accordion -->
+      <details class="details-dropdown">
+        <summary>Analysis Breakdown</summary>
+        <div class="dropdown-content">
+          <div class="section-title">Explanation</div>
+          <div id="explanation"></div>
+
+          <div id="red-flags-section">
+            <div class="section-title">Red Flags</div>
+            <ul id="red-flags-list"></ul>
+          </div>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
 </body>
 </html>

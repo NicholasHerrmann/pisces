@@ -1,15 +1,15 @@
 {
   "manifest_version": 3,
-  "name": "AI Phishing Detector",
+  "name": "Piscis (Phishing AI)",
   "version": "1.0",
-  "permissions": ["activeTab", "scripting"],
+  "permissions": [
+    "activeTab",
+    "scripting"
+  ],
+  "host_permissions": [
+    "http://127.0.0.1:8000/*"
+  ],
   "action": {
     "default_popup": "popup.html"
-  },
-  "content_scripts": [
-    {
-      "matches": ["https://yourwebsite.com/*"],
-      "js": ["popup.js"]
-    }
-  ]
+  }
 }
