@@ -33,6 +33,11 @@ def check_suspicious_links(urls, sender_domain=""):
     suspicious_flags = []
     sender_domain = sender_domain.lower().strip()
 
+    # Guard: Wipe sender_domain if it matches hosting/repository infrastructure
+    blocked_infrastructure = ["vercel.app", "vercel.com", "github.com", "github.io"]
+    if any(blocked in sender_domain for blocked in blocked_infrastructure):
+        sender_domain = ""
+
     for url in urls:
         parsed = urlparse(url)
         domain = parsed.netloc.lower()
