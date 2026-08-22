@@ -40,7 +40,15 @@ function extractSenderDomain() {
   const emailMatch = rawSender.match(/[a-zA-Z0-9._%+-]+@([a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/);
   const extractedDomain = emailMatch ? emailMatch[1].toLowerCase() : "";
 
-  if (extractedDomain.includes("vercel.app") || extractedDomain.includes("vercel.com")) {
+  // List of infrastructure/service domains that shouldn't leak as sender domains
+  const blockedDomains = [
+    "vercel.app",
+    "vercel.com",
+    "github.com",
+    "github.io"
+  ];
+
+  if (blockedDomains.some((blocked) => extractedDomain.includes(blocked))) {
     return "";
   }
 
