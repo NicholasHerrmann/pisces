@@ -31,7 +31,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === "ANALYZE_EMAIL" && sender.tab) {
     const tabId = sender.tab.id;
 
-    fetch("http://127.0.0.1:8000/analyze", {
+    fetch("https://pisces-three.vercel.app/analyze", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ 
