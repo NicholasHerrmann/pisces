@@ -6,49 +6,58 @@ function extractSenderDomain() {
   let rawSender = "";
 
   if (hostname.includes("mail.google.com")) {
-    // Gmail
-    const senderEl = document.querySelector("span[email]") || document.querySelector(".gD");
+    // Target the sender specifically inside the active/expanded open email container (.h7, .gE)
+    const activeHeader = document.querySelector(".h7.aYd .gE") || 
+                         document.querySelector(".h7 .gE") || 
+                         document.querySelector(".gE") || 
+                         document;
+                         
+    const senderEl = activeHeader.querySelector("span[email]") || 
+                      activeHeader.querySelector(".gD[email]") || 
+                      activeHeader.querySelector(".gD");
+
     if (senderEl) {
       rawSender = senderEl.getAttribute("email") || senderEl.innerText || "";
     }
   } else if (hostname.includes("outlook.cloud.microsoft") || hostname.includes("outlook.live.com")) {
-    // Outlook Web
-    const senderEl = document.querySelector("[data-hovercard-id], [aria-label*='@']");
+    // Outlook Web - scope to active message container
+    const activeMessage = document.querySelector('[role="main"]') || document;
+    const senderEl = activeMessage.querySelector("[aria-label*='@'] [data-hovercard-id], [aria-label*='@']");
     if (senderEl) {
       rawSender = senderEl.getAttribute("data-hovercard-id") || senderEl.getAttribute("aria-label") || "";
     }
   } else if (hostname.includes("mail.yahoo.com")) {
-    // Yahoo Mail
-    const senderEl = document.querySelector('[data-test-id="message-view-sender-email"], [data-test-id="sender-email"]');
+    const senderEl = document.querySelector('[data-test-id="message-view-sender-email"]');
     if (senderEl) {
       rawSender = senderEl.innerText || senderEl.getAttribute("title") || "";
     }
   } else if (hostname.includes("mail.icloud.com")) {
-    // iCloud Mail
-    const senderEl = document.querySelector('.cw-email-header-from, [data-test-id="from-address"]');
+    const senderEl = document.querySelector('.cw-email-header-from');
     if (senderEl) {
       rawSender = senderEl.innerText || "";
     }
   } else if (hostname.includes("proton.me")) {
-    // Proton Mail
     const senderEl = document.querySelector('.message-address[data-testid="message-header:from"]');
     if (senderEl) {
       rawSender = senderEl.getAttribute("title") || senderEl.innerText || "";
     }
   }
 
+  // Extract pure email domain via regex
   const emailMatch = rawSender.match(/[a-zA-Z0-9._%+-]+@([a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/);
-  const extractedDomain = emailMatch ? emailMatch[1].toLowerCase() : "";
+  let extractedDomain = emailMatch ? emailMatch[1].toLowerCase().trim() : "";
 
-  // List of infrastructure/service domains that shouldn't leak as sender domains
+  // Infrastructure, dev platform, and web host blocklist
   const blockedDomains = [
     "vercel.app",
     "vercel.com",
     "github.com",
-    "github.io"
+    "github.io",
+    "githubusercontent.com"
   ];
 
   if (blockedDomains.some((blocked) => extractedDomain.includes(blocked))) {
+    console.warn("[Pisces AI] Suppressed infrastructure domain:", extractedDomain);
     return "";
   }
 
