@@ -6,7 +6,7 @@ function extractSenderDomain() {
   let rawSender = "";
 
   if (hostname.includes("mail.google.com")) {
-    // Target the sender specifically inside the active/expanded open email container (.h7, .gE)
+    // Gmail: Target active message card header (.h7 / .gE)
     const activeHeader = document.querySelector(".h7.aYd .gE") || 
                          document.querySelector(".h7 .gE") || 
                          document.querySelector(".gE") || 
@@ -20,7 +20,6 @@ function extractSenderDomain() {
       rawSender = senderEl.getAttribute("email") || senderEl.innerText || "";
     }
   } else if (hostname.includes("outlook.cloud.microsoft") || hostname.includes("outlook.live.com")) {
-    // Outlook Web - scope to active message container
     const activeMessage = document.querySelector('[role="main"]') || document;
     const senderEl = activeMessage.querySelector("[aria-label*='@'] [data-hovercard-id], [aria-label*='@']");
     if (senderEl) {
@@ -43,21 +42,19 @@ function extractSenderDomain() {
     }
   }
 
-  // Extract pure email domain via regex
   const emailMatch = rawSender.match(/[a-zA-Z0-9._%+-]+@([a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/);
   let extractedDomain = emailMatch ? emailMatch[1].toLowerCase().trim() : "";
 
-  // Infrastructure, dev platform, and web host blocklist
+  // Infrastructure & platform blocklist
   const blockedDomains = [
-    "vercel.app",
-    "vercel.com",
     "github.com",
     "github.io",
-    "githubusercontent.com"
+    "githubusercontent.com",
+    "vercel.app",
+    "vercel.com"
   ];
 
   if (blockedDomains.some((blocked) => extractedDomain.includes(blocked))) {
-    console.warn("[Pisces AI] Suppressed infrastructure domain:", extractedDomain);
     return "";
   }
 
