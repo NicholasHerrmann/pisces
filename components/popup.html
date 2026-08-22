@@ -6,25 +6,27 @@
 </head>
 <body>
   <div class="container">
+    <canvas id="waterCanvas"></canvas>
     <div id="status-msg"></div>
 
     <div id="result-container">
       <div id="verdict-banner">SAFE</div>
 
       <div class="gauge-container">
-        <canvas id="gaugeCanvas" width="160" height="160"></canvas>
+        <canvas id="gaugeCanvas" width="225" height="225"></canvas>
         <div class="gauge-label">
           <span id="gaugeValue">0</span>%
           <div class="gauge-sub">Confidence</div>
         </div>
       </div>
       <details class="details-dropdown">
-        <summary id="dropdown-summary">Analysis Breakdown</summary> 
-        
-        <div class="dropdown-content">
-          <div id="red-flags-section">
-            <div class="section-title">Red Flags</div>
-            <ul id="red-flags-list"></ul>
+        <summary id="dropdown-summary">Analysis Breakdown</summary>    
+        <div class="dropdown-wrapper">
+          <div class="dropdown-content">
+            <div id="red-flags-section">
+              <div class="section-title">Red Flags</div>
+              <ul id="red-flags-list"></ul>
+            </div>
           </div>
         </div>
       </details>

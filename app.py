@@ -31,6 +31,8 @@ class EmailRequest(BaseModel):
 
 def check_suspicious_links(urls, sender_domain=""):
     suspicious_flags = []
+    sender_domain = sender_domain.lower().strip()
+
     for url in urls:
         parsed = urlparse(url)
         domain = parsed.netloc.lower()
@@ -38,7 +40,7 @@ def check_suspicious_links(urls, sender_domain=""):
         if re.match(r"^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}", domain):
             suspicious_flags.append(f"URL uses a raw IP address instead of a domain: {url}")
 
-        if sender_domain and sender_domain not in domain:
+        if sender_domain and not domain.endswith(sender_domain):
             suspicious_flags.append(
                 f"Link domain ({domain}) does not match declared sender domain ({sender_domain})"
             )
@@ -123,31 +125,6 @@ Return ONLY a valid JSON object matching this schema:
         raise HTTPException(status_code=500, detail=str(e))
 
 
-#if __name__ == "__main__":
-#    import uvicorn
-#    uvicorn.run(app, host="127.0.0.1", port=8000)
-
-#------------------
-# TESTING PURPOSES
-#------------------
 if __name__ == "__main__":
-    import sys
-
-    if "--test" in sys.argv:
-        # Quick local test without spinning up the server or using curl.
-        # Run with: python app.py --test
-        test_request = EmailRequest(
-            email_text=(
-                "Hi Sarah,\n\n"
-                "Attached is the Q3 budget summary you asked for during standup. Let me know if the "
-                "numbers for the marketing line look off — I pulled them straight from the finance "
-                "dashboard this morning.\n\n"
-                "Talk Thursday,\nJames"
-            ),
-            sender_domain="",
-        )
-        result = analyze_email_endpoint(test_request)
-        print(json.dumps(result.model_dump(), indent=2))
-    else:
-        import uvicorn
-        uvicorn.run(app, host="127.0.0.1", port=8000)
+    import uvicorn
+    uvicorn.run(app, host="127.0.0.1", port=8000)
