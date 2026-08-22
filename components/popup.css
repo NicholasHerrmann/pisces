@@ -1,18 +1,18 @@
 :root {
-  --bg-primary: #0f172a;
+  --bg-primary: #031927;
   --bg-secondary: #1e293b;
   --border-color: #334155;
   --text-main: #f8fafc;
   --text-muted: #94a3b8;
   
   --color-safe:#0f172a;
-  --color-safe-bg: #10b981;
+  --color-safe-bg: #53c566;
   
   --color-suspicious: #0f172a;
-  --color-suspicious-bg: #f59e0b;
+  --color-suspicious-bg: #ebaa61;
   
   --color-scam: #0f172a;
-  --color-scam-bg: #ef4444;
+  --color-scam-bg: #e75252;
 }
 
 * {

@@ -19,18 +19,18 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     statusMsg.innerText = "";
     verdictBanner.className = "";
-    let themeColor = "#10b981";
+    let themeColor = "#53c566";
 
     const verdict = (data.verdict || "").toUpperCase();
 
     if (verdict === "SCAM") {
       verdictBanner.innerText = "SCAM";
       verdictBanner.classList.add("scam");
-      themeColor = "#ef4444";
+      themeColor = "#e75252";
     } else if (verdict === "SUSPICIOUS") {
       verdictBanner.innerText = "SUSPICIOUS";
       verdictBanner.classList.add("suspicious");
-      themeColor = "#f59e0b";
+      themeColor = "#ebaa61";
     } else {
       verdictBanner.innerText = "SAFE";
       verdictBanner.classList.add("safe");

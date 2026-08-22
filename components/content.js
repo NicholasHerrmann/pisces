@@ -7,10 +7,12 @@ function extractSenderDomain() {
 
   if (hostname.includes("mail.google.com")) {
     // Gmail
-    const senderEl = document.querySelector("span[email]");
-    if (senderEl) rawSender = senderEl.getAttribute("email");
-  } else if (hostname.includes("outlook.cloud.microsoft")) {
-    // Outlook
+    const senderEl = document.querySelector("span[email]") || document.querySelector(".gD");
+    if (senderEl) {
+      rawSender = senderEl.getAttribute("email") || senderEl.innerText || "";
+    }
+  } else if (hostname.includes("outlook.cloud.microsoft") || hostname.includes("outlook.live.com")) {
+    // Outlook Web
     const senderEl = document.querySelector("[data-hovercard-id], [aria-label*='@']");
     if (senderEl) {
       rawSender = senderEl.getAttribute("data-hovercard-id") || senderEl.getAttribute("aria-label") || "";
@@ -18,19 +20,31 @@ function extractSenderDomain() {
   } else if (hostname.includes("mail.yahoo.com")) {
     // Yahoo Mail
     const senderEl = document.querySelector('[data-test-id="message-view-sender-email"], [data-test-id="sender-email"]');
-    if (senderEl) rawSender = senderEl.innerText || senderEl.getAttribute("title");
+    if (senderEl) {
+      rawSender = senderEl.innerText || senderEl.getAttribute("title") || "";
+    }
   } else if (hostname.includes("mail.icloud.com")) {
     // iCloud Mail
     const senderEl = document.querySelector('.cw-email-header-from, [data-test-id="from-address"]');
-    if (senderEl) rawSender = senderEl.innerText;
+    if (senderEl) {
+      rawSender = senderEl.innerText || "";
+    }
   } else if (hostname.includes("proton.me")) {
     // Proton Mail
     const senderEl = document.querySelector('.message-address[data-testid="message-header:from"]');
-    if (senderEl) rawSender = senderEl.getAttribute("title") || senderEl.innerText;
+    if (senderEl) {
+      rawSender = senderEl.getAttribute("title") || senderEl.innerText || "";
+    }
   }
 
   const emailMatch = rawSender.match(/[a-zA-Z0-9._%+-]+@([a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/);
-  return emailMatch ? emailMatch[1].toLowerCase() : "";
+  const extractedDomain = emailMatch ? emailMatch[1].toLowerCase() : "";
+
+  if (extractedDomain.includes("vercel.app") || extractedDomain.includes("vercel.com")) {
+    return "";
+  }
+
+  return extractedDomain;
 }
 
 function extractEmailBody() {
